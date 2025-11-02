@@ -31,9 +31,14 @@ export class ClientController {
   @Post('new')
   async createClient(
     @Body()
-    client: CreateClientDto,
+    client: any,
   ): Promise<Client> {
-    return this.clientService.create(client);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const { error, value } = CreateClientDto.validate(client);
+    if (error) {
+      throw new Error(`Validation error: ${error.message}`);
+    }
+    return this.clientService.create(value);
   }
 
   @Put('update/:id')
@@ -41,9 +46,14 @@ export class ClientController {
     @Param('id')
     id: string,
     @Body()
-    client: UpdateClientDto,
+    client: any,
   ): Promise<Client> {
-    return this.clientService.updateById(id, client);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const { error, value } = UpdateClientDto.validate(client);
+    if (error) {
+      throw new Error(`Validation error: ${error.message}`);
+    }
+    return this.clientService.updateById(id, value);
   }
 
   @Delete('delete/:id')

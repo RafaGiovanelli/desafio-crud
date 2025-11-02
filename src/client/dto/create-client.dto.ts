@@ -1,6 +1,9 @@
-export class CreateClientDto {
-  readonly name: string;
-  readonly email: string;
-  readonly cellphone: number;
-  readonly city: string;
-}
+import Joi from 'joi';
+
+const CreateClientDto = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string().email().required(),
+  cellphone: Joi.number().required(),
+  city: Joi.string().required(),
+});
+export { CreateClientDto };
