@@ -6,7 +6,6 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Client } from './schemas/client.schemas';
-import { Types } from 'mongoose';
 import type { Query } from 'express-serve-static-core';
 
 @Injectable()
@@ -17,6 +16,10 @@ export class ClientService {
   ) {}
 
   async findAll(query: Query): Promise<Client[]> {
+    const resPerPage = 2;
+    const currentPage = Number(query.page) || 1;
+    const skip = resPerPage * (currentPage - 1);
+
     const keyword = query.keyword
       ? {
           name: {
@@ -25,11 +28,15 @@ export class ClientService {
           },
         }
       : {};
-    return this.clientModel.find({ ...keyword });
+    return this.clientModel
+      .find({ ...keyword })
+      .limit(resPerPage)
+      .skip(skip);
   }
 
   async findById(id: string): Promise<Client> {
-    if (!Types.ObjectId.isValid(id)) {
+    const isValidId = mongoose.isValidObjectId(id);
+    if (!isValidId) {
       console.log('ID inválido recebido:', id);
       throw new BadRequestException('ID inválido');
     }
@@ -45,7 +52,8 @@ export class ClientService {
   }
 
   async updateById(id: string, client: Client): Promise<Client> {
-    if (!Types.ObjectId.isValid(id)) {
+    const isValidId = mongoose.isValidObjectId(id);
+    if (!isValidId) {
       console.log('ID inválido recebido:', id);
       throw new BadRequestException('ID inválido');
     }
@@ -58,7 +66,8 @@ export class ClientService {
   }
 
   async deleteById(id: string): Promise<Client> {
-    if (!Types.ObjectId.isValid(id)) {
+    const isValidId = mongoose.isValidObjectId(id);
+    if (!isValidId) {
       console.log('ID inválido recebido:', id);
       throw new BadRequestException('ID inválido');
     }
