@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Client } from './schemas/client.schemas';
 import type { Query } from 'express-serve-static-core';
+import { User } from '../auth/schemas/user.schemas';
 
 @Injectable()
 export class ClientService {
@@ -47,8 +48,9 @@ export class ClientService {
     return clientById;
   }
 
-  async create(client: Client): Promise<Client> {
-    return this.clientModel.create(client);
+  async create(client: Client, user: User): Promise<Client> {
+    const data = Object.assign(client, { user: user._id });
+    return this.clientModel.create(data);
   }
 
   async updateById(id: string, client: Client): Promise<Client> {

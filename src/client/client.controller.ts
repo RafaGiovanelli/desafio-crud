@@ -9,12 +9,15 @@ import {
   Post,
   Put,
   Query,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientService } from './client.service';
 import { Client } from './schemas/client.schemas';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client-dto';
 import type { Query as ExpressQuery } from 'express-serve-static-core';
+import { AuthGuard } from '@nestjs/passport';
 @Controller('client')
 export class ClientController {
   constructor(private clientService: ClientService) {}
@@ -42,11 +45,13 @@ export class ClientController {
   //   }
 
   @Post('new')
+  @UseGuards(AuthGuard())
   async createClient(
     @Body()
     client: CreateClientDto,
+    @Req() req,
   ): Promise<Client> {
-    return this.clientService.create(client);
+    return this.clientService.create(client, req.user);
   }
 
   //   @Put('update/:id')

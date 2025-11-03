@@ -1,4 +1,11 @@
-import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsEmpty,
+  IsNotEmpty,
+  IsPhoneNumber,
+  IsString,
+} from 'class-validator';
+import { User } from '../../auth/schemas/user.schemas';
 
 export class CreateClientDto {
   @IsNotEmpty()
@@ -16,6 +23,9 @@ export class CreateClientDto {
   @IsNotEmpty()
   @IsString()
   readonly city: string;
+
+  @IsEmpty({ message: 'Você não pode passar o ID do usuário' })
+  readonly user: User;
 }
 
 // import Joi from 'joi';
