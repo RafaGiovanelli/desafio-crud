@@ -1,4 +1,4 @@
-import { IsOptional, IsPhoneNumber, IsString } from 'class-validator';
+import { IsEmail, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
 
 export class UpdateClientDto {
   @IsOptional()
@@ -6,7 +6,7 @@ export class UpdateClientDto {
   readonly name: string;
 
   @IsOptional()
-  @IsString()
+  @IsEmail({}, { message: 'Digite o email corretamente' })
   readonly email: string;
 
   @IsOptional()
